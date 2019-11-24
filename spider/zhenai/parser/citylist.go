@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"fmt"
 	"github.com/Ethereal-Coder/awesome-go-learn/spider/engine"
+	"log"
 	"regexp"
 )
 
@@ -23,8 +23,8 @@ func ParseCityList(contents []byte) engine.ParseResult {
 				//ParserFunc: engine.NilParser,
 				ParserFunc: ParseCity,
 			})
-		fmt.Printf("City: %s, URL: %s\n", m[2], m[1])
+		log.Printf("City: %s, URL: %s\n", m[2], m[1])
 	}
-	// fmt.Printf("Matches found: %d\n", len(matches))
+	// log.Printf("Matches found: %d\n", len(matches))
 	return result
 }

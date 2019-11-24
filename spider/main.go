@@ -14,8 +14,18 @@ func main() {
 	//})
 
 	// concurrent schedule
-	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.ConcurrentScheduler{},
+	//e := engine.ConcurrentEngine{
+	//	Scheduler:   &scheduler.ConcurrentScheduler{},
+	//	WorkerCount: 100,
+	//}
+	//e.Run(engine.Request{
+	//	Url:        "http://www.zhenai.com/zhenghun",
+	//	ParserFunc: parser.ParseCityList,
+	//})
+
+	// queued scheduler
+	e := engine.QueuedEngine{
+		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 100,
 	}
 	e.Run(engine.Request{

@@ -4,18 +4,17 @@ import (
 	"log"
 )
 
-type ConcurrentEngine struct {
-	Scheduler   IConcurrent
+type QueuedEngine struct {
+	Scheduler   IQueued
 	WorkerCount int
 }
 
-func (e *ConcurrentEngine) Run(seeds ...Request) {
-	//in := make(chan Request)
-	e.Scheduler.Run()
+func (e *QueuedEngine) Run(seeds ...Request) {
 	out := make(chan ParseResult)
+	e.Scheduler.Run()
 
 	for i := 0; i < e.WorkerCount; i++ {
-		e.createWorker(e.Scheduler.WorkerChan(), out)
+		e.createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
 	}
 
 	for _, r := range seeds {
@@ -36,9 +35,13 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 }
 
-func (e *ConcurrentEngine) createWorker(in chan Request, out chan ParseResult) {
+func (e *QueuedEngine) createWorker(in chan Request, out chan ParseResult, s IQueued) {
+	//in := make(chan Request)
 	go func() {
 		for {
+			// Tell scheduler i'm ready
+			s.WorkerReady(in)
+
 			request := <-in
 			result, err := worker(request)
 			if err != nil {

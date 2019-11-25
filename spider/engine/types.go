@@ -11,10 +11,10 @@ type ParseResult struct {
 }
 
 type Item struct {
-	Id      string
-	Url     string
-	Type    string
-	Payload interface{}
+	Id      string      `db:"id"`
+	Url     string      `db:"url"`
+	Type    string      `db:"type"`
+	Payload interface{} `db:"payload"`
 }
 
 func NilParser([]byte) ParseResult {

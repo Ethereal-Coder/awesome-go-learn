@@ -37,10 +37,15 @@ func main() {
 	//})
 
 	// Page
+	itemChan, err := persist.ItemSaver()
+	if err != nil {
+		panic(err)
+	}
+
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.ConcurrentScheduler{},
 		WorkerCount: 100,
-		ItemChan:    persist.ItemSaver(),
+		ItemChan:    itemChan,
 	}
 	e.Run(engine.Request{
 		Url:        "http://www.zhenai.com/zhenghun/shanghai",

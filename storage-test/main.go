@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	//xMongo()
-	xRedis()
+	xMongo()
+	//xRedis()
 }
 
 func xRedis() {
@@ -25,7 +25,7 @@ func xRedis() {
 }
 
 func xMongo() {
-	coll := mongo_demo.GetMongoCollection("ygrsy")
+	//coll := mongo_demo.GetMongoCollection("ygrsy")
 	//mongo_demo.MongoConnect()
 	//mongo_demo.MongoInsert(coll)
 	//mongo_demo.MongoInsertMany(coll)
@@ -33,5 +33,8 @@ func xMongo() {
 	//mongo_demo.MongoQueryEmbedded(coll)
 	//mongo_demo.MongoQueryArray(coll)
 	//mongo_demo.MongoQueryEmbeddedArray(coll)
-	mongo_demo.QueryNullMissingFieldsExamples(coll)
+	//mongo_demo.QueryNullMissingFieldsExamples(coll)
+
+	coll := mongo_demo.GetMongoCollection("tyc-tag")
+	mongo_demo.TycTagProcess(coll)
 }

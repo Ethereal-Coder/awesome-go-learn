@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -26,6 +27,51 @@ func GetMongoCollection(collStr string) (coll *mongo.Collection) {
 	}
 	coll = client.Database("ai-company").Collection(collStr)
 	return
+}
+
+func TycTagProcess(coll *mongo.Collection) {
+	cursor, err := coll.Find(
+		context.Background(),
+		bson.D{
+			{"tag_id", bson.D{
+				{"$exists", false},
+			}},
+		},
+		options.Find().SetProjection(bson.D{
+			{"tag_link", 1},
+		}),
+	//options.Find().SetLimit(3),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Print(result)
+		//log.Print(result["_id"])
+		us := strings.Split(result["tag_link"].(string), "/")
+		tagId := us[len(us)-1]
+		updateRes, updateErr := coll.UpdateOne(
+			context.Background(),
+			bson.D{
+				{"_id", result["_id"]},
+			},
+			bson.D{
+				{"$set", bson.D{
+					{"tag_id", tagId},
+				}},
+			},
+		)
+		log.Println(updateRes, updateErr)
+	}
+	if err := cursor.Err(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func QueryNullMissingFieldsExamples(coll *mongo.Collection) {
